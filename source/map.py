@@ -1,4 +1,3 @@
-
 class Map:
     def __init__(self, N_map = 9, N_win = 4):
         self.N_map = N_map          # Kích thước map
@@ -7,20 +6,8 @@ class Map:
         self.dirs = [(1, 0), (0, 1), (1, 1), (-1, 1)]   # Các chiều của caro khi xét, x hướng xuống, y hướng sang ngang
         self.lastPlay = -1
         self.countTurn = 0
-        self.boardValue = 0
 
     # Hàm vẽ map
-    def drawBoard(self):
-        for i in range(self.N_map):
-            for j in range(self.N_map):
-                if self.board[i][j] == 0:
-                    print(". |", end=" ")
-                elif self.board[i][j] == 1:
-                    print("X |", end=" ")
-                elif self.board[i][j] == -1:
-                    print("O |", end=" ")
-            print()
-    
     # Hàm đánh X/O lên map 
     def setMove(self, i, j, state):
         self.board[i][j] = state
@@ -55,8 +42,9 @@ class Map:
                 + self.countDir(i, j, (-dir[0], -dir[1])) + 1  # Tổng số state liên tiếp = đếm 2 chiều ngược nhau + vị trí đang xét
             if count >= self.N_win:
                 return True
-        return False
-    
+            else:
+                return False
+            
     def isDraw(self):
         return self.countTurn == self.N_map**2
     
@@ -68,4 +56,3 @@ class Map:
         else:
             return None
     
-
