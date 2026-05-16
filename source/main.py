@@ -8,7 +8,7 @@ from graphic import CaroGraphics
 # Khởi tạo game
 # =========================
 
-map_ = Map()
+map_ = Map(N_map = 20, N_win = 5)
 
 gfx = CaroGraphics(
     rows=map_.N_map,
@@ -23,10 +23,10 @@ running = True
 current_player = 1
 
 # Lưu nước cuối
-last_move = None
+map_.lastplay = None
 
 # Đếm số ô đã đánh
-move_count = 0
+map_.countTurn = 0
 
 game_over = False
 
@@ -42,7 +42,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+        if event.type == pygame.MOUSEBUTTONDOWN:
             # từ vị trí bấm chuột suy ra tọa độ trong map
             mx, my = pygame.mouse.get_pos()
             #
@@ -50,27 +50,20 @@ while running:
 
             if button == "Restart":
 
-                map_ = Map(N_map=9, N_win=5)
+                map_ = Map(N_map=map_.N_map, N_win=map_.N_win)
 
                 current_player = 1
-                move_count = 0
+                map_.countTurn = 0
                 game_over = False
-                last_move = None
+                map_.lastplay = None
                 message = ""
-
-                continue
-
-            elif button == "Undo":
-
-                print("Undo")
-
                 continue
 
             elif button == "Exit":
 
                 running = False
-
-
+            elif game_over:
+                continue
             row, col = gfx.mouse_to_grid(mx, my)
 
             # Kiểm tra trong map
@@ -79,26 +72,22 @@ while running:
                 # Đánh cờ
                 map_.setMove(row, col, current_player)
 
-                last_move = (row, col)
+                map_.lastplay = (row, col)
 
-                move_count += 1
-
-                # Kiểm tra thắng
-                if map_.isWin(row, col):
-
-                    if current_player == 1:
+                map_.countTurn += 1
+                map_.result= map_.checkResult(row, col)
+                if  map_.result is not None:
+                    # X win
+                    if map_.result == 1:
                         gfx.message="X WIN"
-                    else:
+                    # O win
+                    elif map_.result == -1:
                         gfx.message="O WIN"
+                    # hòa
+                    else:
+                        gfx.message="DRAW"
 
-                    game_over = True
-
-                # Kiểm tra hòa
-                elif move_count == map_.N_map * map_.N_map:
-
-                    gfx.message="DRAW"
-                    game_over = True
-
+                    game_over = True                
                 # Đổi lượt
                 current_player *= -1
 
@@ -111,7 +100,7 @@ while running:
     gfx.draw_side_panel()
     gfx.draw_pieces(
         map_.board,
-        last_move
+        map_.lastplay
     )
     if game_over:
         gfx.draw_message(gfx.message)
