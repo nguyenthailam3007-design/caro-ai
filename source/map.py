@@ -6,6 +6,8 @@ class Map:
         self.board = [[0 for i in range(N_map)] for j in range(N_map)]  # Tạo map N*N
         self.dirs = [(1, 0), (0, 1), (1, 1), (-1, 1)]   # Các chiều của caro khi xét, x hướng xuống, y hướng sang ngang
         self.lastPlay = -1
+        self.countTurn = 0
+        self.boardValue = 0
 
     # Hàm vẽ map
     def drawBoard(self):
@@ -23,6 +25,7 @@ class Map:
     def setMove(self, i, j, state):
         self.board[i][j] = state
         self.lastPlay = state   # Lưu lại người vừa đánh
+        self.countTurn += 1
 
     # Hàm kiểm tra vị trí có trong bàn cờ
     def isInBoard(self, i, j):
@@ -53,20 +56,16 @@ class Map:
             if count >= self.N_win:
                 return True
         return False
-
-
-map_ = Map()
-for i in  range(map_.N_map**2):
-    map_.drawBoard()
-    while True:
-        x, y = list(map(int, input("Nhap toa do: ").split()))
-        if map_.isValid(x, y):
-            break
-    map_.setMove(x, y, -map_.lastPlay)
-    if map_.isWin(x, y):
-        if map_.lastPlay == 1:
-            print("X win")
+    
+    def isDraw(self):
+        return self.countTurn == self.N_map**2
+    
+    def checkResult(self, i, j):
+        if self.isWin(i, j):
+            return self.lastPlay
+        elif self.isDraw():
+            return 0
         else:
-            print("O win")
-        break
+            return None
+    
 
