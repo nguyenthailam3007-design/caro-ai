@@ -23,10 +23,10 @@ running = True
 current_player = 1
 
 # Lưu nước cuối
-last_move = None
+map_.lastplay = None
 
 # Đếm số ô đã đánh
-move_count = 0
+map_.countTurn = 0
 
 game_over = False
 
@@ -53,9 +53,9 @@ while running:
                 map_ = Map(N_map=9, N_win=5)
 
                 current_player = 1
-                move_count = 0
+                map_.countTurn = 0
                 game_over = False
-                last_move = None
+                map_.lastplay = None
                 message = ""
 
                 continue
@@ -79,26 +79,35 @@ while running:
                 # Đánh cờ
                 map_.setMove(row, col, current_player)
 
-                last_move = (row, col)
+                map_.lastplay = (row, col)
 
-                move_count += 1
+                map_.countTurn += 1
 
-                # Kiểm tra thắng
-                if map_.isWin(row, col):
+                # Kiểm tra game over chưa
+                # if map_.checkResult != None:
+                #     # X win
+                #     if map_.checkResult(row, col) == 1:
+                #         gfx.message="X WIN"
+                #     # O win
+                #     elif map_.checkResult(row, col) == -1:
+                #         gfx.message="O WIN"
+                #     # hòa
+                #     else:
+                #         gfx.message="DRAW"
 
-                    if current_player == 1:
+                #     game_over = True
+                if map_.checkResult != None:
+                    # X win
+                    if map_.checkResult(row, col) == 1:
                         gfx.message="X WIN"
-                    else:
+                    # O win
+                    elif map_.checkResult(row, col) == -1:
                         gfx.message="O WIN"
+                    # hòa
+                    else:
+                        gfx.message="DRAW"
 
-                    game_over = True
-
-                # Kiểm tra hòa
-                elif move_count == map_.N_map * map_.N_map:
-
-                    gfx.message="DRAW"
-                    game_over = True
-
+                    game_over = True                
                 # Đổi lượt
                 current_player *= -1
 
@@ -111,7 +120,7 @@ while running:
     gfx.draw_side_panel()
     gfx.draw_pieces(
         map_.board,
-        last_move
+        map_.lastplay
     )
     if game_over:
         gfx.draw_message(gfx.message)

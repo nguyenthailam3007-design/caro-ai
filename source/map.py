@@ -5,12 +5,14 @@ class Map:
         self.board = [[0 for i in range(N_map)] for j in range(N_map)]  # Tạo map N*N
         self.dirs = [(1, 0), (0, 1), (1, 1), (-1, 1)]   # Các chiều của caro khi xét, x hướng xuống, y hướng sang ngang
         self.lastPlay = -1
+        self.countTurn = 0
 
     # Hàm vẽ map
     # Hàm đánh X/O lên map 
     def setMove(self, i, j, state):
         self.board[i][j] = state
         self.lastPlay = state   # Lưu lại người vừa đánh
+        self.countTurn += 1
 
     # Hàm kiểm tra vị trí có trong bàn cờ
     def isInBoard(self, i, j):
@@ -40,4 +42,17 @@ class Map:
                 + self.countDir(i, j, (-dir[0], -dir[1])) + 1  # Tổng số state liên tiếp = đếm 2 chiều ngược nhau + vị trí đang xét
             if count >= self.N_win:
                 return True
-        return False
+            else:
+                return False
+            
+    def isDraw(self):
+        return self.countTurn == self.N_map**2
+    
+    def checkResult(self, i, j):
+        if self.isWin(i, j):
+            return self.lastPlay
+        elif self.isDraw():
+            return 0
+        else:
+            return None
+    
