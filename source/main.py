@@ -8,7 +8,7 @@ from graphic import CaroGraphics
 # Khởi tạo game
 # =========================
 
-map_ = Map()
+map_ = Map(N_map = 20, N_win = 5)
 
 gfx = CaroGraphics(
     rows=map_.N_map,
@@ -42,7 +42,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
+        if event.type == pygame.MOUSEBUTTONDOWN:
             # từ vị trí bấm chuột suy ra tọa độ trong map
             mx, my = pygame.mouse.get_pos()
             #
@@ -50,27 +50,20 @@ while running:
 
             if button == "Restart":
 
-                map_ = Map(N_map=9, N_win=5)
+                map_ = Map(N_map=map_.N_map, N_win=map_.N_win)
 
                 current_player = 1
                 map_.countTurn = 0
                 game_over = False
                 map_.lastplay = None
                 message = ""
-
-                continue
-
-            elif button == "Undo":
-
-                print("Undo")
-
                 continue
 
             elif button == "Exit":
 
                 running = False
-
-
+            elif game_over:
+                continue
             row, col = gfx.mouse_to_grid(mx, my)
 
             # Kiểm tra trong map
@@ -82,26 +75,13 @@ while running:
                 map_.lastplay = (row, col)
 
                 map_.countTurn += 1
-
-                # Kiểm tra game over chưa
-                # if map_.checkResult != None:
-                #     # X win
-                #     if map_.checkResult(row, col) == 1:
-                #         gfx.message="X WIN"
-                #     # O win
-                #     elif map_.checkResult(row, col) == -1:
-                #         gfx.message="O WIN"
-                #     # hòa
-                #     else:
-                #         gfx.message="DRAW"
-
-                #     game_over = True
-                if map_.checkResult != None:
+                map_.result= map_.checkResult(row, col)
+                if  map_.result is not None:
                     # X win
-                    if map_.checkResult(row, col) == 1:
+                    if map_.result == 1:
                         gfx.message="X WIN"
                     # O win
-                    elif map_.checkResult(row, col) == -1:
+                    elif map_.result == -1:
                         gfx.message="O WIN"
                     # hòa
                     else:

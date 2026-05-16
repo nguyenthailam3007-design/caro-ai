@@ -6,6 +6,7 @@ class Map:
         self.dirs = [(1, 0), (0, 1), (1, 1), (-1, 1)]   # Các chiều của caro khi xét, x hướng xuống, y hướng sang ngang
         self.lastPlay = -1
         self.countTurn = 0
+        self.result=None
 
     # Hàm vẽ map
     # Hàm đánh X/O lên map 
@@ -42,8 +43,7 @@ class Map:
                 + self.countDir(i, j, (-dir[0], -dir[1])) + 1  # Tổng số state liên tiếp = đếm 2 chiều ngược nhau + vị trí đang xét
             if count >= self.N_win:
                 return True
-            else:
-                return False
+        return False
             
     def isDraw(self):
         return self.countTurn == self.N_map**2

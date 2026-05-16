@@ -1,21 +1,29 @@
 import pygame
-
 class CaroGraphics(object):
-    def __init__(self, rows=9, cols=9, cell_size=70, margin=50):
-
+    def __init__(self, rows=9, cols=9, cell_size=60, margin=40):
         pygame.init()
-
         self.rows = rows
         self.cols = cols
-        self.cell_size = cell_size
         self.margin = margin
-
         self.panel_width = 180
-        width = cols * cell_size + margin * 2 + self.panel_width
-        height = rows * cell_size + margin * 2
 
-        self.screen = pygame.display.set_mode((width, height),pygame.RESIZABLE)
+        # 1. Lấy thông tin độ phân giải màn hình máy tính
+        info = pygame.display.Info()
+        screen_h = info.current_h - 100 # Trừ hao 100px cho thanh Taskbar và thanh tiêu đề cửa sổ
+        
+        # 2. Tự động tính cell_size để bàn cờ vừa vặn với chiều cao màn hình
+        calculated_cell_size = (screen_h - (margin * 2)) // rows
+        
+        # Đặt giới hạn kích thước ô lớn nhất là 60 để bàn cờ nhỏ không bị phóng to quá đà
+        self.cell_size = min(calculated_cell_size, 60)
+
+        # 3. Tính toán lại width, height dựa trên cell_size mới
+        width = self.cols * self.cell_size + self.margin * 2 + self.panel_width
+        height = self.rows * self.cell_size + self.margin * 2
+
+        self.screen = pygame.display.set_mode((width, height), pygame.RESIZABLE)
         pygame.display.set_caption("Caro Game")
+
         self.font = pygame.font.SysFont("arial", 40, bold=True)
 
         # Màu
@@ -217,14 +225,14 @@ class CaroGraphics(object):
         self.draw_button(
             "Restart",
             panel_x + 20,
-            100
-        )
-
-        self.draw_button(
-            "Undo",
-            panel_x + 20,
             180
         )
+
+        # self.draw_button(
+        #     "Undo",
+        #     panel_x + 20,
+        #     180
+        # )
 
         self.draw_button(
             "Exit",
