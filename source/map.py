@@ -1,4 +1,3 @@
-
 class Map:
     def __init__(self, N_map = 9, N_win = 4):
         self.N_map = N_map          # Kích thước map
