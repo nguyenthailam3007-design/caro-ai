@@ -7,17 +7,6 @@ class Map:
         self.lastPlay = -1
 
     # Hàm vẽ map
-    def drawBoard(self):
-        for i in range(self.N_map):
-            for j in range(self.N_map):
-                if self.board[i][j] == 0:
-                    print(". |", end=" ")
-                elif self.board[i][j] == 1:
-                    print("X |", end=" ")
-                elif self.board[i][j] == -1:
-                    print("O |", end=" ")
-            print()
-    
     # Hàm đánh X/O lên map 
     def setMove(self, i, j, state):
         self.board[i][j] = state
@@ -52,20 +41,3 @@ class Map:
             if count >= self.N_win:
                 return True
         return False
-
-
-map_ = Map()
-for i in  range(map_.N_map**2):
-    map_.drawBoard()
-    while True:
-        x, y = list(map(int, input("Nhap toa do: ").split()))
-        if map_.isValid(x, y):
-            break
-    map_.setMove(x, y, -map_.lastPlay)
-    if map_.isWin(x, y):
-        if map_.lastPlay == 1:
-            print("X win")
-        else:
-            print("O win")
-        break
-
