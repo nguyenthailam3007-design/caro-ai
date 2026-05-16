@@ -1,7 +1,7 @@
 import pygame
 
 class CaroGraphics(object):
-    def __init__(self, rows=9, cols=9, cell_size=60, margin=40):
+    def __init__(self, rows=9, cols=9, cell_size=70, margin=50):
 
         pygame.init()
 
@@ -10,11 +10,13 @@ class CaroGraphics(object):
         self.cell_size = cell_size
         self.margin = margin
 
-        width = cols * cell_size + margin * 2
+        self.panel_width = 180
+        width = cols * cell_size + margin * 2 + self.panel_width
         height = rows * cell_size + margin * 2
 
-        self.screen = pygame.display.set_mode((width, height))
+        self.screen = pygame.display.set_mode((width, height),pygame.RESIZABLE)
         pygame.display.set_caption("Caro Game")
+        self.font = pygame.font.SysFont("arial", 40, bold=True)
 
         # Màu
         self.BG_COLOR = (245, 245, 245)
@@ -24,6 +26,10 @@ class CaroGraphics(object):
         self.O_COLOR = (50, 100, 220)
 
         self.HIGHLIGHT = (120, 220, 120)
+        self.message=""
+
+        #tạo danh sách nút bấm
+        self.buttons = {}
 
     def _grid_to_pixel(self, row, col):
 
@@ -137,3 +143,136 @@ class CaroGraphics(object):
         row = (my - self.margin) // self.cell_size
 
         return row, col
+    
+    def draw_message(self, text):
+
+        # Tạo text surface
+        text_surface = self.font.render(
+            text,
+            True,
+            (20, 20, 20)
+        )
+
+        # Lấy hình chữ nhật của text
+        rect = text_surface.get_rect()
+
+        # Đặt giữa màn hình
+        rect.center = (
+            self.screen.get_width() // 2,
+            self.margin // 2
+        )
+
+        # Vẽ nền trắng phía sau text
+        bg_rect = rect.inflate(20, 10)
+
+        pygame.draw.rect(
+            self.screen,
+            (255, 255, 255),
+            bg_rect
+        )
+
+        pygame.draw.rect(
+            self.screen,
+            (50, 50, 50),
+            bg_rect,
+            2
+        )
+
+        # Vẽ text
+        self.screen.blit(text_surface, rect)
+
+    def draw_side_panel(self):
+
+        board_width = self.cols * self.cell_size + self.margin * 2
+
+        panel_x = board_width
+
+        panel_rect = pygame.Rect(
+            panel_x,
+            0,
+            self.panel_width,
+            self.screen.get_height()
+        )
+
+        # nền panel
+        pygame.draw.rect(
+            self.screen,
+            (230, 230, 230),
+            panel_rect
+        )
+
+        # title
+        title = self.font.render(
+            "MENU",
+            True,
+            (20, 20, 20)
+        )
+
+        self.screen.blit(
+            title,
+            (panel_x + 40, 30)
+        )
+
+        # tạo button
+        self.draw_button(
+            "Restart",
+            panel_x + 20,
+            100
+        )
+
+        self.draw_button(
+            "Undo",
+            panel_x + 20,
+            180
+        )
+
+        self.draw_button(
+            "Exit",
+            panel_x + 20,
+            260
+        )
+
+    def draw_button(self, text, x, y,
+                    width=140,
+                    height=50):
+
+        rect = pygame.Rect(x, y, width, height)
+
+        # lưu button
+        self.buttons[text] = rect
+
+        # nền
+        pygame.draw.rect(
+            self.screen,
+            (180, 180, 180),
+            rect,
+            border_radius=10
+        )
+
+        # viền
+        pygame.draw.rect(
+            self.screen,
+            (80, 80, 80),
+            rect,
+            2,
+            border_radius=10
+        )
+
+        # text
+        text_surface = self.font.render(
+            text,
+            True,
+            (0, 0, 0)
+        )
+
+        text_rect = text_surface.get_rect(center=rect.center)
+
+        self.screen.blit(text_surface, text_rect)
+    def check_button_click(self, pos):
+
+        for name, rect in self.buttons.items():
+
+            if rect.collidepoint(pos):
+                return name
+
+        return None

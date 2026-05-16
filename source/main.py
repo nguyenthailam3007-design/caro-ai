@@ -43,8 +43,33 @@ while running:
             running = False
 
         if event.type == pygame.MOUSEBUTTONDOWN and not game_over:
-
+            # từ vị trí bấm chuột suy ra tọa độ trong map
             mx, my = pygame.mouse.get_pos()
+            #
+            button = gfx.check_button_click((mx, my))
+
+            if button == "Restart":
+
+                map_ = Map(N_map=9, N_win=5)
+
+                current_player = 1
+                move_count = 0
+                game_over = False
+                last_move = None
+                message = ""
+
+                continue
+
+            elif button == "Undo":
+
+                print("Undo")
+
+                continue
+
+            elif button == "Exit":
+
+                running = False
+
 
             row, col = gfx.mouse_to_grid(mx, my)
 
@@ -62,16 +87,16 @@ while running:
                 if map_.isWin(row, col):
 
                     if current_player == 1:
-                        print("X WIN")
+                        gfx.message="X WIN"
                     else:
-                        print("O WIN")
+                        gfx.message="O WIN"
 
                     game_over = True
 
                 # Kiểm tra hòa
                 elif move_count == map_.N_map * map_.N_map:
 
-                    print("DRAW")
+                    gfx.message="DRAW"
                     game_over = True
 
                 # Đổi lượt
@@ -82,11 +107,14 @@ while running:
     # =========================
 
     gfx.draw_board()
-
+    #vẽ bảng nút bấm bên cạnh
+    gfx.draw_side_panel()
     gfx.draw_pieces(
         map_.board,
         last_move
     )
+    if game_over:
+        gfx.draw_message(gfx.message)
 
     pygame.display.flip()
 
