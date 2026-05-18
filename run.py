@@ -198,7 +198,7 @@ class Map:
     # =========================
     # MINIMAX
     # =========================
-    def minimax(self, depth, maximizingPlayer):
+    def minimax(self, depth, boardVal maximizingPlayer):
 
         # =====================
         # KIỂM TRA KẾT THÚC

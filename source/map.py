@@ -4,15 +4,40 @@ class Map:
         self.N_win = N_win          # Số giá trị liên tiếp để thắng
         self.board = [[0 for i in range(N_map)] for j in range(N_map)]  # Tạo map N*N
         self.dirs = [(1, 0), (0, 1), (1, 1), (-1, 1)]   # Các chiều của caro khi xét, x hướng xuống, y hướng sang ngang
-        self.lastPlay = -1
+        self.lastPlay = None
         self.countTurn = 0
+        self.lastI = 0
+        self.lastJ = 0
 
     # Hàm vẽ map
+    def drawBoard(self):
+        '''
+        States:
+        0 = empty (.)
+        1 = AI (x)
+        -1 = human (o)
+        '''
+        N = self.N_map
+        for i in range(N):
+            for j in range(N):
+                if self.board[i][j] == 1:
+                    state = 'x'
+                if self.board[i][j] == -1:
+                    state = 'o'
+                if self.board[i][j] == 0:
+                    state = '.'
+                print('{}|'.format(state), end=" ")
+            print()
+        print() 
+    
     # Hàm đánh X/O lên map 
     def setMove(self, i, j, state):
         self.board[i][j] = state
         self.lastPlay = state   # Lưu lại người vừa đánh
         self.countTurn += 1
+        self.lastI = i
+        self.lastJ = j
+        
 
     # Hàm kiểm tra vị trí có trong bàn cờ
     def isInBoard(self, i, j):
@@ -38,16 +63,18 @@ class Map:
     # Hàm kiểm tra thắng chưa
     def isWin(self, i, j):
         for dir in self.dirs:
+            # Tổng số state liên tiếp = đếm 2 chiều ngược nhau + vị trí đang xét
             count = self.countDir(i, j, dir) \
-                + self.countDir(i, j, (-dir[0], -dir[1])) + 1  # Tổng số state liên tiếp = đếm 2 chiều ngược nhau + vị trí đang xét
+                + self.countDir(i, j, (-dir[0], -dir[1])) + 1  
             if count >= self.N_win:
-                return True
-            else:
-                return False
-            
+                return True    
+        return False
+
+    # Kiểm tra hòa        
     def isDraw(self):
         return self.countTurn == self.N_map**2
     
+    # kiểm tra kết quả ván
     def checkResult(self, i, j):
         if self.isWin(i, j):
             return self.lastPlay
@@ -55,4 +82,4 @@ class Map:
             return 0
         else:
             return None
-    
+
